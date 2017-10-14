@@ -15,7 +15,6 @@ class BuatTableDivisi extends Migration
     {
         Schema::create('divisi', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('id_divisi');
             $table->string('nama');
             $table->timestamps();
         });

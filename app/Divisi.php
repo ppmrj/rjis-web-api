@@ -17,5 +17,4 @@ class Divisi extends Model {
         return $this->hasMany('App\Grup');
     }
 }
-
 ?>

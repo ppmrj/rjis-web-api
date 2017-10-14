@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Divisi extends Model {
+class Grup extends Model {
     
     protected $table = 'grup';
 

@@ -15,6 +15,11 @@ class BuatTableGrup extends Migration
     {
         Schema::create('grup', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('id_grup_line');
+            $table->string('nama');
+            $table->string('status_game');
+            $table->string('tipe_grup');
+            $table->integer('id_divisi');
             $table->timestamps();
         });
     }
