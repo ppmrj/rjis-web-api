@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use Log;
 use App\Grup;
 use App\Divisi;
 
@@ -18,28 +19,39 @@ class ControllerGrup extends Controller {
             $tipe_grup = $request->tipe_grup;
             $id_divisi = $divisi->id;
 
-            $daftar = Grup::create([
-                'id_grup_line' => $id_grup_line,
-                'nama' => $nama,
-                'status_game' => $status_game,
-                'tipe_grup' => $tipe_grup,
-                'id_divisi' => $id_divisi
-            ]);
+            if (!Grup::where('id_grup_line', $id_grup_line)->first()) {
+                $daftar = Grup::create([
+                    'id_grup_line' => $id_grup_line,
+                    'nama' => $nama,
+                    'status_game' => $status_game,
+                    'tipe_grup' => $tipe_grup,
+                    'id_divisi' => $id_divisi
+                ]);
 
-            if ($daftar) {
-                $res['success'] = true;
-                $res['message'] = "Sukses mendaftarkan grup.";
+                if ($daftar) {
+                    $res['success'] = true;
+                    $res['message'] = "Sukses mendaftarkan grup.";
+                    Log::info($res['message']);
 
-                return response($res);
+                    return response($res);
+                } else {
+                    $res['success'] = false;
+                    $res['message'] = "Gagal mendaftarkan grup.";
+                    Log::info($res['message']);
+
+                    return response($res);
+                }
             } else {
                 $res['success'] = false;
-                $res['message'] = "Gagal mendaftarkan grup.";
+                $res['message'] = "Grup ini sudah terdaftar ke dalam database dibawah divisi ".Grup::where('id_grup_line', $id_grup_line)->first()->divisi()->first()->nama.".";
+                Log::info($res['message']);
 
                 return response($res);
             }
         } else {
             $res['success'] = true;
             $res['message'] = "Divisi $nama tidak ada di Database.";
+            Log::info($res['message']);
 
             return response($res);
         }
@@ -49,15 +61,17 @@ class ControllerGrup extends Controller {
         $grup = Grup::where('id_grup_line', $id)->first();
 
         if($grup){
-            $divisi = $grup->divisi()->first();
+            $divisi = $grup->divisi()->get();
             $res['success'] = true;
             $res['result'] = $grup;
             $res['result']['divisi'] = $divisi->nama;
+            Log::info("Sukses get by line id");
 
             return response($res);
         } else {
             $res['success'] = false;
             $res['message'] = "Grup dengan ID LINE Group $id tidak dapat ditemukan di Database.";
+            Log::info($res['message']);
 
             return response($res);
         }
@@ -76,17 +90,20 @@ class ControllerGrup extends Controller {
                     $res['result'][$i]['divisi'] = $g->divisi()->first()->nama;
                     $i++;
                 }
+                Log::info("Sukses get grup by divisi");
 
                 return response($res);
             } else {
                 $res['success'] = false;
                 $res['message'] = "Tidak ada grup yang dimiliki oleh divisi $divisi.";
+                Log::info($res['message']);
 
                 return response($res);
             }
         } else {
             $res['success'] = false;
             $res['message'] = "Tidak ada divisi dengan nama $divisi.";
+            Log::info($res['message']);
 
             return response($res);
         }
@@ -99,17 +116,20 @@ class ControllerGrup extends Controller {
             if($grup->delete()){
                 $res['success'] = true;
                 $res['message'] = "Behasil menghapus grup dari database.";
+                Log::info($res['message']);
     
                 return response($res);
             } else {
                 $res['success'] = false;
                 $res['message'] = "Error dalam query.";
+                Log::info($res['message']);
 
                 return response($res);
             }
         } else {
             $res['success'] = false;
             $res['message'] = "Grup dengan ID LINE Group $id tidak dapat ditemukan di Database.";
+            Log::info($res['message']);
         
             return response($res);
         }
