@@ -12,11 +12,12 @@ class Grup extends Model {
         'id_grup_line',
         'nama',
         'status_game',
-        'tipe_grup'
+        'tipe_grup',
+        'id_divisi'
     ];
 
     public function divisi(){
-        return $this->belongsTo('App\Divisi');
+        return $this->belongsTo('App\Divisi', 'id_divisi');
     }
 }
 

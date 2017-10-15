@@ -64,18 +64,26 @@ class ControllerGrup extends Controller {
     }
 
     public function get_grup_by_divisi($divisi){
-        $grup = Divisi::where('nama', $divisi)->grup()->get();
+        $div = Divisi::where('nama', $divisi)->first();
+        if ($div) {
+            $grup = $div->grup()->get();
 
-        if($grup){
-            $res['success'] = true;
-            $res['result'] = $grup;
-            $i=0;
-            foreach ($grup as $g){
-                $res['result'][$i]['divisi'] = $g->divisi()->nama;
-                $i++;
+            if ($grup->isNotEmpty()) {
+                $res['success'] = true;
+                $res['result'] = $grup;
+                $i = 0;
+                foreach ($grup as $g) {
+                    $res['result'][$i]['divisi'] = $g->divisi()->first()->nama;
+                    $i++;
+                }
+
+                return response($res);
+            } else {
+                $res['success'] = false;
+                $res['message'] = "Tidak ada grup yang dimiliki oleh divisi $divisi.";
+
+                return response($res);
             }
-
-            return response($res);
         } else {
             $res['success'] = false;
             $res['message'] = "Tidak ada divisi dengan nama $divisi.";

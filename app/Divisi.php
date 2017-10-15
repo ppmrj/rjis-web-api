@@ -14,7 +14,7 @@ class Divisi extends Model {
     ];
 
     public function grup(){
-        return $this->hasMany('App\Grup');
+        return $this->hasMany('App\Grup', 'id_divisi');
     }
 }
 ?>
